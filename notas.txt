@@ -1,0 +1,8 @@
+//criação de nova branch
+git checkout -b branchderebeca
+git branch
+git add .
+git commit -m "atleração x"
+
+//volta pra main
+git checkout main 
