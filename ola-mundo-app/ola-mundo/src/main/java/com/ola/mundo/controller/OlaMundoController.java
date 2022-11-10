@@ -1,5 +1,7 @@
 package com.ola.mundo.controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +39,13 @@ public class OlaMundoController {
         return saudacaoRepository.findById(Integer.valueOf(id)).get();
     }
 
-    @DeleteMapping("/excluiSaudacao/{id}")
-    public void excluirSaudacao(@PathVariable("id") String id){
+    @DeleteMapping("/saudacao/{id}")
+    public String excluirSaudacaoPeloId(@PathVariable("id") String id){
         saudacaoRepository.deleteById(Integer.valueOf(id));
+        return "Registro deletado com sucesso";
     }
     
-    @PutMapping("/atualizaSaudacao/{id}")
+    @PutMapping("/saudacao/{id}")
     public Saudacao atualizaSaudacao(@RequestBody Saudacao novaSaudacao, @PathVariable String id) {
       
       return saudacaoRepository.findById(Integer.valueOf(id))
@@ -54,6 +57,19 @@ public class OlaMundoController {
             novaSaudacao.setId(Integer.valueOf(id));
           return saudacaoRepository.save(novaSaudacao);
         });
+    }
+
+    @PutMapping("/saudacao")
+    public Object atualizaSaudacao(@RequestBody Saudacao novaSaudacao) {
+        try{
+            Saudacao saudacao = saudacaoRepository.findById(novaSaudacao.getId()).get();
+            saudacao.setMensagem(novaSaudacao.getMensagem());
+            return saudacaoRepository.save(saudacao);
+
+        }catch(NoSuchElementException e){
+            return "Não há saudação com ID " + String.valueOf(novaSaudacao.getId());
+        }
+
     }
   
 
